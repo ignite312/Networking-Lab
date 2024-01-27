@@ -1,26 +1,41 @@
 import socket
+import threading
 
-DEST_IP = socket.gethostbyname(socket.gethostname())
-DEST_PORT = 12345
-ENCODER = "utf-8"
+SERVER_IP = socket.gethostbyname(socket.gethostname())
+SERVER_PORT = 12345
+ENCODER = 'utf-8'
 BYTESIZE = 1024
 
-# Create a client socket and connect to the server
+# Create a client socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((DEST_IP, DEST_PORT))
+client_socket.connect((SERVER_IP, SERVER_PORT))
 
-while True:
-    # Receive information from the server
-    message = client_socket.recv(BYTESIZE).decode(ENCODER)
+def receive_messages():
+    while True:
+        try:
+            message = client_socket.recv(BYTESIZE).decode(ENCODER)
+            print(message)
+        except Exception as e:
+            print(f"Error receiving message: {e}")
+            break
 
-    # Quit if the connected server wants to quit, else keep sending messages
-    if message.lower() == "quit":
-        client_socket.send("quit".encode(ENCODER))
-        print("\nEnding the chat... goodbye!")
-        break
-    else:
-        print(f"\n{message}")
-        user_input = input("Message: ")
-        client_socket.send(user_input.encode(ENCODER))
+def send_messages():
+    while True:
+        try:
+            user_input = input("Type your message: ")
+            client_socket.send(user_input.encode(ENCODER))
+        except Exception as e:
+            print(f"Error sending message: {e}")
+            break
 
-client_socket.close()
+# Get the user's name and send it to the server
+user_name = input("Enter your name: ")
+client_socket.send(user_name.encode(ENCODER))
+
+# Create two threads for sending and receiving messages
+receive_thread = threading.Thread(target=receive_messages)
+send_thread = threading.Thread(target=send_messages)
+
+# Start the threads
+receive_thread.start()
+send_thread.start()

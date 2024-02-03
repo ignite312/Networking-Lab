@@ -1,6 +1,7 @@
 import socket
 
-HOST_IP = '10.33.2.94'
+# HOST_IP = '10.33.2.94'
+HOST_IP = socket.gethostbyname(socket.gethostname())
 HOST_PORT = 12348
 ENCODER = "utf-8"
 BYTESIZE = 1024
@@ -18,26 +19,27 @@ balance = 50000
 
 while True:
     amount = client_socket.recv(BYTESIZE).decode(ENCODER)
-    print('Amount: ', amount)
+    print('\nClient Request Received:\n')
+    print(f'Amount: {amount}')
     op = client_socket.recv(BYTESIZE).decode(ENCODER)
-    print('Requested operation: ', op)
+    print(f'Requested operation: {op}\n')
 
     if op == "quit":
         client_socket.send("quit".encode(ENCODER))
-        print("\nEnding the chat... goodbye!")
+        print("\nEnding the server... goodbye!")
         break
     elif op == 'wd':
         if balance < int(amount):
             client_socket.send("You have insufficient funds!!".encode(ENCODER))
-            print('Insufficient fund responded')
+            print('Insufficient fund responded\n')
         else:
             balance -= int(amount)
             response = "Amount withdrawn: " + str(amount) + "\nBalance: " + str(balance)
             client_socket.send(response.encode(ENCODER))
-            print('Successful withdrawal responded')
+            print('Successful withdrawal responded\n')
     elif op == 'dp':
         balance += int(amount)
         response = "Amount diposited: " + str(amount) + "\nBalance: " + str(balance)
         client_socket.send(response.encode(ENCODER))
-        print('Successful diposition responded')
+        print('Successful diposition responded\n')
 server_socket.close()

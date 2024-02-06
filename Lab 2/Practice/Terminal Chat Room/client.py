@@ -2,7 +2,7 @@ import socket
 import threading
 
 SERVER_IP = socket.gethostbyname(socket.gethostname())
-SERVER_PORT = 12345
+SERVER_PORT = 12347
 ENCODER = 'utf-8'
 BYTESIZE = 1024
 

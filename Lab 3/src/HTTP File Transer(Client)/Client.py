@@ -19,15 +19,17 @@ def upload_file(url, file_path):
 
 #Connection
 HOST_IP = '192.168.0.101'
-HOST_PORT = 12347
+HOST_PORT = 12348
 HOST_URL = f'http://{HOST_IP}:{HOST_PORT}/'
 
 # Download
-server_file_url = HOST_URL + "Files/A_S.txt"
-save_path = "Downloads/A_S.txt"
+file_name = input("Enter the file name to download: ")
+server_file_url = HOST_URL + "Files/" + file_name
+save_path = "Downloads/" + file_name
 download_file(server_file_url, save_path)
 
 # Upload
-client_file_url = "Uploads/C_C.txt"
+file_name = input("Enter the file name to Upload: ")
+client_file_url = "Uploads/" + file_name
 upload_path = HOST_URL
 upload_file(upload_path, client_file_url)

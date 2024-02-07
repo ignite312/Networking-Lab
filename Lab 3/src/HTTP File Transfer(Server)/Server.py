@@ -1,6 +1,7 @@
 import http.server
 import socketserver
 import os
+import threading
 
 class FileServer(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -39,11 +40,14 @@ class FileServer(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_error(500, f"Internal Server Error: {e}")
 
-#Connection
-HOST_IP = '192.168.0.101'
-HOST_PORT = 12347
+class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    pass
 
-with socketserver.TCPServer((HOST_IP, HOST_PORT), FileServer) as httpd:
+# Connection
+HOST_IP = '192.168.0.101'
+HOST_PORT = 12348
+
+with ThreadedTCPServer((HOST_IP, HOST_PORT), FileServer) as httpd:
     print(f"Server started on port {HOST_PORT}")
     
     try:

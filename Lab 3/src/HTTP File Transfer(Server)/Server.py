@@ -21,10 +21,27 @@ class FileServer(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404, "File Not Found")
         except Exception as e:
             self.send_error(500, f"Internal Server Error: {e}")
+            
+    def do_POST(self):
+        try:
+            content_length = int(self.headers['Content-Length'])
+            data = self.rfile.read(content_length)
+            
+            file_name = self.headers['File-Name']
+            file_path = os.path.join(os.getcwd(), "Files/" + file_name)
+            
+            with open(file_path, 'wb') as f:
+                f.write(data)
+            
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'File uploaded successfully.')
+        except Exception as e:
+            self.send_error(500, f"Internal Server Error: {e}")
 
 #Connection
 HOST_IP = '192.168.0.101'
-HOST_PORT = 12346
+HOST_PORT = 12347
 
 with socketserver.TCPServer((HOST_IP, HOST_PORT), FileServer) as httpd:
     print(f"Server started on port {HOST_PORT}")

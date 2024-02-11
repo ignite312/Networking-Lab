@@ -1,0 +1,5 @@
+Name                Value                   Type    TTL
+cse.du.ac.com.       ns1.cse.du.ac.com.      NS      86400
+cse.du.ac.com       ns2.cse.du.ac.com.       NS      86400
+ns1.cse.du.ac.com   192.0.2.1               A       86400
+ns2.cse.du.ac.com.   192.0.2.2               A       86400

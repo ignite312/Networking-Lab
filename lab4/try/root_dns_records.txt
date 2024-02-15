@@ -1,3 +1,0 @@
-Name                Value                   Type    TTL
-cse.du.ac.bd.       ns1.cse.du.ac.bd.       NS      86400
-cse.du.ac.bd.       ns2.cse.du.ac.bd.       NS      86400

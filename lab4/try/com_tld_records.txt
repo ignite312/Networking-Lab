@@ -1,4 +1,0 @@
-Name                Value                   Type    TTL
-cse.du.ac.com.       2001:db8::3             AAAA    86400
-www.cse.du.ac.com.   cse.du.ac.com.          CNAME   86400
-cse.du.ac.com.       mail.cse.du.ac.com.     MX      86400

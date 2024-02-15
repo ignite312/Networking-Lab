@@ -1,64 +1,57 @@
 import socket
+import threading
+from dnslib import DNSRecord, DNSHeader, DNSQuestion, RR, QTYPE, A, AAAA, NS, CNAME, MX
 
-def load_dns_records(file_path):
-    """
-    Load DNS records from the provided file, skipping the header line.
-    """
-    dns_records = {}
-
-    with open(file_path, 'r') as file:
-        next(file)  # Skip the header line
+def handle_dns_request(data, client_address, server_socket):
+    dns_request = DNSRecord.parse(data)
+    query_name = dns_request.q.qname
+    dns_response = dns_request.reply()
+    
+    with open('bd_auth_records.txt', 'r') as file:
+        li = 0
         for line in file:
+            if li == 0:
+                li += 1
+                continue
             parts = line.strip().split()
-            name = parts[0]
-            value = parts[1]
-            record_type = parts[2]
-            try:
-                ttl = int(parts[3])
-            except ValueError:
-                # If TTL cannot be converted to an integer, set it to a default value
-                ttl = 86400  # Default TTL value
+            if parts[0] == query_name:
+                if parts[2] == "A":
+                    dns_response.add_answer(RR(parts[0], QTYPE.A, rdata=A(parts[1]), ttl=int(parts[3])))
+                    li += 1
+                elif parts[2] == "AAAA":
+                    dns_response.add_answer(RR(parts[0], QTYPE.AAAA, rdata=AAAA(parts[1]), ttl=int(parts[3])))
+                    li += 1
+                elif parts[2] == "NS":
+                    dns_response.add_answer(RR(parts[0], QTYPE.NS, rdata=NS(parts[1]), ttl=int(parts[3])))
+                    li += 1
+                elif parts[2] == "CNAME":
+                    dns_response.add_answer(RR(parts[0], QTYPE.CNAME, rdata=CNAME(parts[1]), ttl=int(parts[3])))
+                    li += 1
+                elif parts[2] == "MX":
+                    dns_response.add_answer(RR(parts[0], QTYPE.MX, rdata=MX(parts[1]), ttl=int(parts[3])))
+                    li += 1
+        if li <= 1:
+            print('\nNo match in the server. Sending no match found response')
+            server_socket.sendto('No match found'.encode('utf-8'), client_address)
+        else:
+            response_data = dns_response.pack()
+            print('\nSending response to {}:{}'.format(*client_address))
+            print('Response: ', dns_response, '\n')
+            server_socket.sendto(response_data, client_address)
 
-            if name not in dns_records:
-                dns_records[name] = []
+def handle_client_request(server_socket):
+    while True:
+        data, client_address = server_socket.recvfrom(4096)
+        print("\nReceived request from {}: {}".format(*client_address))
 
-            dns_records[name].append((value, record_type, ttl))
+        handle_dns_request(data, client_address, server_socket)
+    
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server_address = ('localhost', 8016)
+server_socket.bind(server_address)
 
-    return dns_records
+print('DNS server running on {}:{}'.format(*server_address))
 
-def handle_dns_query(query_name, dns_records):
-    """
-    Handle DNS queries based on the loaded DNS records.
-    """
-    if query_name in dns_records:
-        return dns_records[query_name]
-    else:
-        return []
-
-def start_dns_server(file_path):
-    """
-    Start the DNS server with the provided DNS records file.
-    """
-    dns_records = load_dns_records(file_path)
-    DNS_PORT = 8011         #root
-
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server_socket:
-        server_socket.bind(('localhost', DNS_PORT))
-        print(f"DNS server started. Listening on port {DNS_PORT}...")
-
-        while True:
-            data, addr = server_socket.recvfrom(1024)
-            query_name = data.decode('utf-8').strip()
-
-            response = handle_dns_query(query_name, dns_records)
-
-            if response:
-                # Send DNS response
-                response_str = '\n'.join('\t'.join(map(str, record)) for record in response)
-                server_socket.sendto(response_str.encode('utf-8'), addr)
-            else:
-                server_socket.sendto(b'Not Found', addr)
-
-if __name__ == "__main__":
-    DNS_RECORDS_FILE = 'bd_auth_server.txt'
-    start_dns_server(DNS_RECORDS_FILE)
+client_thread = threading.Thread(target=handle_client_request, args=(server_socket,))
+client_thread.daemon = False
+client_thread.start()

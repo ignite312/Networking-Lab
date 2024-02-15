@@ -1,14 +1,19 @@
 import socket
+from dnslib import DNSRecord, DNSQuestion, QTYPE
 
-def send_dns_query(query_name, server_address, server_port):
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as client_socket:
-        client_socket.sendto(query_name.encode('utf-8'), (server_address, server_port))
-        response, _ = client_socket.recvfrom(1024)
-        print(response.decode('utf-8'))
+def send_dns_query(query_name, client_socket):
+    dns_request = DNSRecord.question(query_name)
+    dns_request_data = dns_request.pack()
+    server_address = ('localhost', 8000)
+    client_socket.sendto(dns_request_data, server_address)
 
-if __name__ == "__main__":
-    SERVER_ADDRESS = 'localhost'
-    SERVER_PORT = 5354
-    QUERY_NAME = input()
+    response_data, _ = client_socket.recvfrom(4096)
 
-    send_dns_query(QUERY_NAME, SERVER_ADDRESS, SERVER_PORT)
+    dns_response = DNSRecord.parse(response_data)
+
+    print('\nReceived DNS response from {}:{}'.format(*server_address))
+    print('\nDNS response:\n', dns_response)
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+query_name = input('Insert a query:\n')
+send_dns_query(query_name, client_socket)

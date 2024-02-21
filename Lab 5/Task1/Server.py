@@ -26,7 +26,6 @@ def tcp_server(host, port):
         finally:
             connection.close()
 
-if __name__ == "__main__":
-    host = "127.0.0.1"
-    port = 12345
-    tcp_server(host, port)
+host = "127.0.0.1"
+port = 12345
+tcp_server(host, port)

@@ -15,7 +15,6 @@ def tcp_client(host, port):
     finally:
         client_socket.close()
 
-if __name__ == "__main__":
-    host = "127.0.0.1"
-    port = 12345
-    tcp_client(host, port)
+host = "192.168.0.127"
+port = 12345
+tcp_client(host, port)

@@ -1,7 +1,8 @@
 import socket
 
-HOST_IP = '10.33.2.94'
-HOST_PORT = 12349
+#Connection
+HOST_IP = '192.168.0.100'
+HOST_PORT = 12348
 ENCODER = "utf-8"
 BYTESIZE = 1024
 
@@ -15,6 +16,8 @@ client_socket, client_address = server_socket.accept()
 client_socket.send("You are connected to the server...".encode(ENCODER))
 
 def isPrime(n):
+    if n < 2:
+        return "No"
     i = 2
     while i*i <= n:
         if n%i == 0:
@@ -29,19 +32,19 @@ def isPalindrome(n):
 
 while True:
     number = client_socket.recv(BYTESIZE).decode(ENCODER)
-    print("received number: ", number)
+    print("Received number: ", number)
     op = client_socket.recv(BYTESIZE).decode(ENCODER)
-    print("received request: ", op)
+    print("Received request: ", op)
 
     if op == "quit":
         client_socket.send("quit".encode(ENCODER))
-        print("\nEnding the chat... goodbye!")
+        print("\nEnding the Server... goodbye!")
         break
-    elif op == 'pm':
+    elif op == 'Prime':
         message = isPrime(int(number))
         client_socket.send(message.encode(ENCODER))
         print("sent response: ", message)
-    elif op == "pal":
+    elif op == "Palindrome":
         message = isPalindrome(number)
         client_socket.send(message.encode(ENCODER))
         print("sent response: ", message)

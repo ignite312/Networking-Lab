@@ -1,6 +1,13 @@
 import requests
 import os
 
+# Define the Folder Name where the downloaded file will be stored
+path = 'Downloads'
+try:
+    os.makedirs(path)
+except FileExistsError:
+    pass
+
 def download_file(url, save_path):
     response = requests.get(url)
     if response.status_code == 200:
@@ -28,7 +35,7 @@ HOST_URL = f'http://{HOST_IP}:{HOST_PORT}/'
 # Download
 file_name = input("Enter the file name to download: ")
 server_file_url = HOST_URL + "ServerFiles/" + file_name
-save_path = "Downloads/" + file_name
+save_path = path + "/" + file_name
 download_file(server_file_url, save_path)
 
 # Upload

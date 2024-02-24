@@ -1,8 +1,7 @@
 import socket
 
-DEST_IP = socket.gethostbyname(socket.gethostname())
-
-# DEST_IP = '10.33.2.94'
+#Connection
+DEST_IP = "192.168.0.100"
 DEST_PORT = 12348
 ENCODER = "utf-8"
 BYTESIZE = 1024
@@ -18,10 +17,8 @@ while True:
         print("\nEnding the server... goodbye!")
         break
     else:
-        print(f"\nServer Response:\n{message}")
-        user_input = input("\nAmount: ")
-        client_socket.send(user_input.encode(ENCODER))
-        user_input = input("Type in wd or dp for withdrawal or deposit: ")
+        print(f"Server: {message}")
+        user_input = input(f"\nClient: ")
         client_socket.send(user_input.encode(ENCODER))
 
 client_socket.close()

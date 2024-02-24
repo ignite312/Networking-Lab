@@ -3,6 +3,13 @@ import socketserver
 import os
 import threading
 
+# Define the Folder Name where the Incoming file from Client will be stored
+path = 'FilesFromClient'
+try:
+    os.makedirs(path)
+except FileExistsError:
+    pass
+
 class ThreadedHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     pass
 
@@ -46,7 +53,7 @@ class FileServer(http.server.SimpleHTTPRequestHandler):
 
 # Connection
 HOST_IP = '192.168.0.100'
-HOST_PORT = 12347
+HOST_PORT = 12348
 
 # Create a threaded server
 server = ThreadedHTTPServer((HOST_IP, HOST_PORT), FileServer)

@@ -13,6 +13,7 @@ This repository exists for the sole purpose of collaborating in team lab tasks. 
  ## How to check IP address?
  - Linux : ```hostname -I```
  - Mac   : ```ipconfig getifaddr en0```
+ - Or you can use : ```HOST_IP = socket.gethostbyname(socket.gethostname())```
 
  ## Table of Content
   - Lab 1 : [An Exercise on LAN Configuration and Troubleshooting Tools](https://github.com/ignite312/Networking-Lab/tree/main/Lab%201)

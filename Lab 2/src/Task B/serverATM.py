@@ -1,7 +1,6 @@
 import socket
 
-# HOST_IP = '10.33.2.94'
-HOST_IP = socket.gethostbyname(socket.gethostname())
+HOST_IP = '192.168.0.100'
 HOST_PORT = 12348
 ENCODER = "utf-8"
 BYTESIZE = 1024

@@ -1,4 +1,0 @@
-A socket serves as a software endpoint facilitating the connection between two devices for data exchange. Socket programming involves creating a listener socket (server-side) and a client socket, establishing a connection with the server for communication. This interaction can take place using protocols like TCP or UDP
-
-
-This File is for Download

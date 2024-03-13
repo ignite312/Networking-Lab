@@ -10,6 +10,11 @@ This repository exists for the sole purpose of collaborating in team lab tasks. 
  - Python
  - Tex(Report)
 
+## How to Run Server and Client?
+- First open the directory of your server and client file
+- Open Terminal
+- Run: ```python3 Server.py```
+- Run: ```python3 Client.py```
  ## How to check IP address?
  - Linux : ```hostname -I```
  - Mac   : ```ipconfig getifaddr en0```

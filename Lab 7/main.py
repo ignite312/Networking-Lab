@@ -394,8 +394,8 @@ if __name__ == "__main__":
                 for key in result:
                     print(f"Router {key} shortest paths: {result[key]}")
                     file.write(f"Router {key} shortest paths: {result[key]}\n")
-                print(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}\tTotal Memory used: {total_memory_used}\n")
-                file.write(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}\tTotal Memory used: {total_memory_used}\n\n")
+                print(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}s\tTotal Memory used: {total_memory_used}kB\n")
+                file.write(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}s\tTotal Memory used: {total_memory_used}kB\n\n")
             
             analysis.append([i, m, elapsed_time, total_memory_used])
 

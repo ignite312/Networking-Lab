@@ -3,28 +3,100 @@
         "router1": 8001,
         "router2": 8002,
         "router3": 8003,
-        "router4": 8004
+        "router4": 8004,
+        "router5": 8005,
+        "router6": 8006,
+        "router7": 8007,
+        "router8": 8008,
+        "router9": 8009,
+        "router10": 8010,
+        "router11": 8011,
+        "router12": 8012,
+        "router13": 8013,
+        "router14": 8014,
+        "router15": 8015,
+        "router16": 8016
     },
     "graph": [
         [
-            "router1",
-            "router2",
-            12
+            "router7",
+            "router11",
+            80
         ],
         [
-            "router1",
-            "router3",
-            36
-        ],
-        [
-            "router2",
-            "router3",
-            46
-        ],
-        [
-            "router2",
             "router4",
-            41
+            "router11",
+            23
+        ],
+        [
+            "router10",
+            "router14",
+            30
+        ],
+        [
+            "router14",
+            "router15",
+            35
+        ],
+        [
+            "router2",
+            "router15",
+            50
+        ],
+        [
+            "router9",
+            "router13",
+            35
+        ],
+        [
+            "router5",
+            "router16",
+            42
+        ],
+        [
+            "router4",
+            "router7",
+            42
+        ],
+        [
+            "router1",
+            "router16",
+            88
+        ],
+        [
+            "router1",
+            "router15",
+            63
+        ],
+        [
+            "router8",
+            "router10",
+            4
+        ],
+        [
+            "router7",
+            "router8",
+            9
+        ],
+        [
+            "router4",
+            "router13",
+            48
+        ],
+        [
+            "router1",
+            "router4",
+            39
+        ],
+        [
+            "router3",
+            "router8",
+            9
+        ],
+        [
+            "router10",
+            "router16",
+            71
         ]
     ]
 }

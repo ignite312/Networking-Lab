@@ -1,4 +1,0 @@
-The HyperText Transfer Protocol (HTTP), the Web’s application-layer protocol.The client program and server program, executing on different end systems, talk to each other by exchanging HTTP messages. HTTP defines the structure of these messages and how the client and server exchange the messages. HTTP defines how Web clients request Web pages from Web servers and how servers transfer Web pages to clients.HTTP uses TCP as its underlying transport protocol. The HTTP client first initiates a TCP connection with the server. Once the connection is established, the browser and the server processes access TCP through their socket interfaces. The client sends HTTP request messages into its socket interface and receives HTTP response mes- sages from its socket interface.
-
-
-This file will be uploaded!

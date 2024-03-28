@@ -51,11 +51,11 @@ python filename.py
  ```zsh
  ipconfig
  ```
- - For same device communication
+ - Or use
  ```Python
  HOST_IP = socket.gethostbyname(socket.gethostname())
  ```
- or simply
+ For same Device, simply
  ```Python
  HOST_IP = "localhost"
  ```

@@ -364,7 +364,7 @@ if __name__ == "__main__":
     while i <= 256:
         m = i
         while m <= (i * (i-1)) // 2:
-            with open("ExperimentReseults.txt", "a") as file:
+            with open("ExperimentResults.txt", "a") as file:
                 file.write(f"Test {test_number}: Running new test...\n\n")
                 print(f"Test {test_number}: Running new test...\n")
             delete_files("links/")
@@ -372,10 +372,9 @@ if __name__ == "__main__":
             graph = generate_random_graph(i, m)
             with open("routerMapping.json", "w") as file:
                 file.write(json.dumps(graph, indent=4))
-            with open("ExperimentReseults.txt", "a") as file:
+            with open("ExperimentResults.txt", "a") as file:
                 file.write("Sample:\n")
                 file.write(json.dumps(graph, indent=4))
-                file.write("\n\nOutput:\n")
 
             process = multiprocessing.Process(target=init)
 
@@ -390,12 +389,13 @@ if __name__ == "__main__":
             elapsed_time = end-start-10
             total_memory_used = get_directory_size("links/") / 1024
 
-            with open("ExperimentReseults.txt", "a") as file:
+            with open("ExperimentResults.txt", "a") as file:
+                file.write("\n\nOutput:\n")
                 for key in result:
                     print(f"Router {key} shortest paths: {result[key]}")
                     file.write(f"Router {key} shortest paths: {result[key]}\n")
-                print(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}s\tTotal Memory used: {total_memory_used}kB\n")
-                file.write(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}s\tTotal Memory used: {total_memory_used}kB\n\n")
+                print(f"Total nodes: {i}\t\t\tTotal links: {m}\t\t\tTime elapsed: {elapsed_time} s\t\t\tTotal Memory used: {total_memory_used} kB\n")
+                file.write(f"Total nodes: {i}\t\t\tTotal links: {m}\t\t\tTime elapsed: {elapsed_time} s\t\t\tTotal Memory used: {total_memory_used} kB\n\n")
             
             analysis.append([i, m, elapsed_time, total_memory_used])
 
@@ -403,7 +403,7 @@ if __name__ == "__main__":
             test_number += 1
         i *= 2
 
-    with open("ExperimentReseults.txt", "a") as file:
+    with open("ExperimentResults.txt", "a") as file:
         print("\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n")
         file.write(f"\n\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n\n")
 

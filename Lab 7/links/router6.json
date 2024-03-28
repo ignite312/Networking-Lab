@@ -1,0 +1,14 @@
+[
+    {
+        "id": "router6",
+        "savetime": 0,
+        "ttl": 60,
+        "links": [
+            [
+                "router2",
+                "router6",
+                3
+            ]
+        ]
+    }
+]

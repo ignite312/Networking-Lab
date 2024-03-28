@@ -1,0 +1,49 @@
+[
+    {
+        "id": "router5",
+        "savetime": 0,
+        "ttl": 60,
+        "links": [
+            [
+                "router1",
+                "router5",
+                167
+            ],
+            [
+                "router1",
+                "router8",
+                77
+            ],
+            [
+                "router3",
+                "router5",
+                80
+            ],
+            [
+                "router3",
+                "router7",
+                51
+            ],
+            [
+                "router4",
+                "router5",
+                30
+            ],
+            [
+                "router5",
+                "router7",
+                29
+            ],
+            [
+                "router5",
+                "router8",
+                90
+            ],
+            [
+                "router7",
+                "router8",
+                63
+            ]
+        ]
+    }
+]

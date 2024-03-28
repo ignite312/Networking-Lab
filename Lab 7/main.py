@@ -7,6 +7,7 @@ import multiprocessing
 import heapq
 import random
 from collections import defaultdict
+from collections import OrderedDict
 
 HOST = "localhost"
 ENCODER = "utf-8"
@@ -357,7 +358,14 @@ def get_directory_size(directory):
 
     return total_size
 
+
+# Main function
 if __name__ == "__main__":
+    if os.path.exists("ExperimentResults.txt"):
+        os.remove("ExperimentResults.txt")
+    if os.path.exists("Results.txt"):
+        os.remove("Results.txt")
+    
     analysis = []
     test_number = 1
     i = 2
@@ -385,39 +393,47 @@ if __name__ == "__main__":
 
             end = get_most_recent_update_time("links/")
 
-            result = extract_router_links("links/")
+            result = OrderedDict(extract_router_links("links/"))
             elapsed_time = end-start-10
             total_memory_used = get_directory_size("links/") / 1024
 
             with open("ExperimentResults.txt", "a") as file:
                 file.write("\n\nOutput:\n")
                 for key in result:
-                    print(f"Router {key} shortest paths: {result[key]}")
-                    file.write(f"Router {key} shortest paths: {result[key]}\n")
+                    print(f"{key} shortest paths: {result[key]}")
+                    file.write(f"{key} shortest paths: {result[key]}\n")
                 print(f"Total nodes: {i}\t\t\tTotal links: {m}\t\t\tTime elapsed: {elapsed_time} s\t\t\tTotal Memory used: {total_memory_used} kB\n")
                 file.write(f"Total nodes: {i}\t\t\tTotal links: {m}\t\t\tTime elapsed: {elapsed_time} s\t\t\tTotal Memory used: {total_memory_used} kB\n\n")
             
             analysis.append([i, m, elapsed_time, total_memory_used])
 
             m *= 2
+            if i == 256:
+                break
             test_number += 1
         i *= 2
 
     with open("ExperimentResults.txt", "a") as file:
-        print("\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n")
-        file.write(f"\n\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n\n")
+        file.write("\n\n\nAll samples finished testing!! See Reports in Reports.txt\n")
 
+    with open("Results.txt", "a") as file:
+        print("\n\nAll samples finished testing.\nHere's an analysis of the Link State algorightm implementation:\n\n")
+        file.write(f"\nHere's an analysis of the Link State algorightm implementation:\n\n\n")
+        i = 1
         for a in analysis:
             n, m, elapsed, memory = a
+            print(f"Test Case {i}")
             print(f"Number of nodes: {n}")
             print(f"Number of edges: {m}")
             print(f"Total Time Taken by the Process: {elapsed}")
             print(f"Total Memory used by the Process: {memory}")
             print()
+            file.write(f"Test Case {i}\n")
             file.write(f"Number of nodes: {n}\n")
             file.write(f"Number of edges: {m}\n")
-            file.write(f"Total Time Taken by the Process: {elapsed}\n")
-            file.write(f"Total Memory used by the Process: {memory}")
-            file.write("\n")
+            file.write(f"Total Time Taken by the Process: {elapsed} s\n")
+            file.write(f"Total Memory used by the Process: {memory} kB")
+            file.write("\n\n")
+            i += 1
         
     # printOptimumCosts()

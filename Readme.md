@@ -62,8 +62,8 @@ python filename.py
 
  ## Render Latex Code
 
- - Install any latex renderer like `MikTeX`, or `LyX`, or anything else
- - Install `LaTeX Workshop` extension on VSCode
+ - Install any latex renderer like [MikTeX](https://miktex.org/), or [LyX](https://www.lyx.org/), or anything else
+ - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension on VSCode
  - Or use [Overleaf](https://www.overleaf.com/). Also provides online collaboration
 
  ## Team

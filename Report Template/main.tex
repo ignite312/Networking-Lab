@@ -1,0 +1,103 @@
+\documentclass[11pt]{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{placeins}
+\usepackage{enumitem}
+\usepackage{hyperref} % Required for hyperlinks
+\usepackage{float}
+
+% Define a custom color for the terminal command
+\definecolor{terminalcolor}{RGB}{0, 128, 0}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=green
+}
+
+% Define a custom command for highlighting terminal commands
+\newcommand{\labNo}{7}
+\newcommand{\labTitle}{Implementation of Link State Algorithm}
+
+% Bullet Points Setup
+\newlist{customItemize}{itemize}{4}
+\setlist[customItemize,1]{label=\textbullet}
+\setlist[customItemize,2]{label=\textopenbullet}
+\setlist[customItemize,3]{label=\squarebullet}
+\setlist[customItemize,4]{label=\textasteriskcentered}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \includegraphics[scale=0.35]{du_logo.png}\par
+        \begin{Huge}
+            \textsc{University of Dhaka}\par
+        \end{Huge}
+        \begin{Large}
+            Department of Computer Science and Engineering\par \vspace{1cm}
+            CSE-3111 : Computer Networking Lab \\[12pt]    
+            Lab Report \labNo : \labTitle
+        \end{Large}
+    \end{center}
+    
+    \vfill
+    
+    \begin{large}
+        \begin{multicols}{2}
+            \textbf{Submitted By :\\[12pt]}
+                Name: \\[8pt]
+                Roll No : \\[12pt]
+                Name: \\[8pt]
+                Roll No : \\[12pt]
+                
+            \columnbreak
+            
+            \noindent
+            \textbf{Submitted To :\\[12pt]}
+                Dr. Md. Abdur Razzaque\\[12pt]
+                Dr. Md. Mamun Or Rashid\\[12pt]
+                Dr. Muhammad Ibrahim\\[12pt]
+                Md. Redwan Ahmed Rizvee
+        \end{multicols}    
+    \end{large} 
+    
+\textbf{Submitted On :} \today\\[20pt]
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+
+\subsection{Objectives}
+
+
+\section{Theory}
+
+\subsection{Router Mapping}
+
+\subsection{Creation, Maintenance, and Updating of a Topology}
+
+\section{Methodology}
+
+\section{Experimental results}
+
+\subsection{Snapshots of the Program Outputs}
+
+\subsection{Performance Analysis}
+
+\section{Experience}
+    
+\begin{thebibliography}{1}
+    \bibitem{Geeksforgeeks} \url{https://www.geeksforgeeks.org/}
+    \bibitem{Javapoint} \url{https://www.javatpoint.com/}
+    \bibitem{Programiz} \url{https://www.programiz.com/}
+\end{thebibliography}
+
+\end{document}

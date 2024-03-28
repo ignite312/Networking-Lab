@@ -10,10 +10,10 @@ This repository exists for the sole purpose of collaborating in team lab tasks. 
   - Lab 5 : [Implementation of flow control and reliable data transfer through management of timeout, fast retransmit, cumulative acknowledgment, loss of data and acknowledgment packets.](https://github.com/ignite312/Networking-Lab/tree/main/Lab%205)
 
 ## Languages
- - ``Python``
- - ``LaTeX``
+ - ``Python`` ``v3.12.2``
+ - ``LaTeX`` ``MiKTeX Utility v1.9 (MiKTeX v24.1)``
 
-## How to Run Server and Client?
+## Run Code
 First open the directory of your server and client file
 - Open Terminal
 - Run command
@@ -59,6 +59,12 @@ python filename.py
  ```Python
  HOST_IP = "localhost"
  ```
+
+ ## Render Latex Code
+
+ - Install any latex renderer like `MikTeX`, or `LyX`, or anything else
+ - Install `LaTeX Workshop` extension on VSCode
+ - Or use [Overleaf](https://www.overleaf.com/). Also provides online collaboration
 
  ## Team
  - Md Emon Khan

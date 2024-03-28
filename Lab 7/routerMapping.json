@@ -1,0 +1,30 @@
+{
+    "routers": {
+        "router1": 8001,
+        "router2": 8002,
+        "router3": 8003,
+        "router4": 8004
+    },
+    "graph": [
+        [
+            "router1",
+            "router2",
+            12
+        ],
+        [
+            "router1",
+            "router3",
+            36
+        ],
+        [
+            "router2",
+            "router3",
+            46
+        ],
+        [
+            "router2",
+            "router4",
+            41
+        ]
+    ]
+}

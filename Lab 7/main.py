@@ -344,20 +344,38 @@ def extract_router_links(directory):
 
     return result
 
-if __name__ == "__main__":
+def get_directory_size(directory):
+    total_size = 0
+    try:
+        for entry in os.scandir(directory):
+            if entry.is_dir(follow_symlinks=False):
+                total_size += get_directory_size(entry.path)
+            else:
+                total_size += entry.stat(follow_symlinks=False).st_size
+    except OSError as e:
+        pass
 
+    return total_size
+
+if __name__ == "__main__":
     analysis = []
     test_number = 1
     i = 2
-    while i <= 1000:
+    while i <= 256:
         m = i
         while m <= (i * (i-1)) // 2:
-            print(f"Test {test_number}: Running new test...\n")
+            with open("ExperimentReseults.txt", "a") as file:
+                file.write(f"Test {test_number}: Running new test...\n\n")
+                print(f"Test {test_number}: Running new test...\n")
             delete_files("links/")
             create_router_files("links/", i)
             graph = generate_random_graph(i, m)
             with open("routerMapping.json", "w") as file:
                 file.write(json.dumps(graph, indent=4))
+            with open("ExperimentReseults.txt", "a") as file:
+                file.write("Sample:\n")
+                file.write(json.dumps(graph, indent=4))
+                file.write("\n\nOutput:\n")
 
             process = multiprocessing.Process(target=init)
 
@@ -370,30 +388,36 @@ if __name__ == "__main__":
 
             result = extract_router_links("links/")
             elapsed_time = end-start-10
+            total_memory_used = get_directory_size("links/") / 1024
 
             with open("ExperimentReseults.txt", "a") as file:
-                file.write(f"Test {test_number}: Running new test...\n")
                 for key in result:
                     print(f"Router {key} shortest paths: {result[key]}")
                     file.write(f"Router {key} shortest paths: {result[key]}\n")
-                print(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}\n")
-                file.write(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}\n\n")
+                print(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}\tTotal Memory used: {total_memory_used}\n")
+                file.write(f"Total nodes: {i}\tTotal links: {m}\tTime elapsed: {elapsed_time}\tTotal Memory used: {total_memory_used}\n\n")
             
-            elapsed_time = end-start-10
-            
-
-            analysis.append([i, m, elapsed_time])
+            analysis.append([i, m, elapsed_time, total_memory_used])
 
             m *= 2
             test_number += 1
         i *= 2
 
-    print("\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n")
+    with open("ExperimentReseults.txt", "a") as file:
+        print("\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n")
+        file.write(f"\n\n\nAll samples finished testing.\n Here's an analysis of the Link State algorightm implementation:\n\n\n")
 
-    for a in analysis:
-        n, m, elapsed = a
-        print(f"Number of nodes: {n}")
-        print(f"Number of edges: {m}")
-        print(f"Total Time Taken by the Process: {elapsed}")
-        print()
+        for a in analysis:
+            n, m, elapsed, memory = a
+            print(f"Number of nodes: {n}")
+            print(f"Number of edges: {m}")
+            print(f"Total Time Taken by the Process: {elapsed}")
+            print(f"Total Memory used by the Process: {memory}")
+            print()
+            file.write(f"Number of nodes: {n}\n")
+            file.write(f"Number of edges: {m}\n")
+            file.write(f"Total Time Taken by the Process: {elapsed}\n")
+            file.write(f"Total Memory used by the Process: {memory}")
+            file.write("\n")
+        
     # printOptimumCosts()

@@ -8,6 +8,7 @@ This repository exists for the sole purpose of collaborating in team lab tasks. 
   - Lab 3 : [Implementing File transfer using SocketProgramming and HTTP GET/POST requests](https://github.com/ignite312/Networking-Lab/tree/main/Lab%203)
   - Lab 4 : [Distributed Database Management, Implementation of Iterative, and Recursive Queries of DNS Records](https://github.com/ignite312/Networking-Lab/tree/main/Lab%204)
   - Lab 5 : [Implementation of flow control and reliable data transfer through management of timeout, fast retransmit, cumulative acknowledgment, loss of data and acknowledgment packets.](https://github.com/ignite312/Networking-Lab/tree/main/Lab%205)
+  - Lab 6 : [Implementation of TCP Reno and New Reno congestion control algorithms and their performance analysis.](https://github.com/ignite312/Networking-Lab/tree/main/Lab%206)
   - Lab 7 : [Implementation of Link State Routing Algorithm](https://github.com/ignite312/Networking-Lab/tree/main/Lab%207)
 ## Languages
  - ``Python`` ``v3.12.2``

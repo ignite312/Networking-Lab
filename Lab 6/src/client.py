@@ -1,138 +1,131 @@
-# client socket program
 import socket
+import sys
 import time 
+import threading
+import traceback
 import random
+ 
+ 
+class colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    END = '\033[0m'
 
-# Function to create TCP segment header
-def create_segment(seq_num=0, ack_num=0, ack=0, sf=0, rwnd=0, checksum=0):
-    return seq_num.to_bytes(4, byteorder="little") + \
-           ack_num.to_bytes(4, byteorder="little") + \
-           ack.to_bytes(1, byteorder="little") + \
-           sf.to_bytes(1, byteorder="little") + \
-           rwnd.to_bytes(2, byteorder="little") + \
-           checksum.to_bytes(2, byteorder="little")
+SERVER_IP = '192.168.0.195'
+SERVER_PORT = 8000
+BUFFER_SIZE = '2048'
+ERROR_PERCENTAGE = 70
 
-# Function to extract header fields from TCP segment
-def extract_header(segment):
-    return int.from_bytes(segment[:4], byteorder="little"), \
-           int.from_bytes(segment[4:8], byteorder="little"), \
-           int.from_bytes(segment[8:9], byteorder="little"), \
-           int.from_bytes(segment[9:10], byteorder="little"), \
-           int.from_bytes(segment[10:12], byteorder="little"), \
-           int.from_bytes(segment[12:14], byteorder="little")
+ENCODER = 'utf-8'
+FILENAME = "data2.txt"
+# FILENAME = "image.jpeg"
+MSS = 1024
+PACKET_SIZE = 1111
+HEADER_LENGTH = 87 # 1111 (packet size) - 1024 (mss)
+END_MESSAGE = "END".encode(ENCODER)
 
-# Function to calculate checksum
-def calculate_checksum(bytestream):
-    if len(bytestream) % 2 == 1:
-        bytestream += b'\x00'
+last_packet_acked = 1
 
-    checksum = 0
+buffer = {}
 
-    for i in range(0, len(bytestream), 2):
-        chunk = (bytestream[i] << 8) + bytestream[i+1]
-        checksum += chunk
+def make_packet(data: bytes, ack: int):
+   source_port = b'0000008989'
+   destination_port = b'0000008989'
+   sequence_number = b'00000000000000000000'
+   ack_number = str(ack).zfill(20).encode(ENCODER)
+   header_length = str(len(data)).zfill(16).encode(ENCODER)
+   ack_flag = b'0'
+   rwnd = b'0000000000'
 
-        if checksum > 0xffff:
-            checksum = (checksum & 0xffff) + 1
+   header = source_port + destination_port + sequence_number + ack_number + header_length + ack_flag + rwnd
 
-    return ~checksum & 0xffff
+   packet = header + data
 
+   return packet
 
-HOST = '127.0.0.1'
-PORT = 6676
+def extract(packet):
+   source_port = int(packet[:10].decode(ENCODER))
+   destination_port = int(packet[10:20].decode(ENCODER))
+   sequence_number = int(packet[20:40].decode(ENCODER))
+   ack_number = int(packet[40:60].decode(ENCODER))
+   length = int(packet[60:76].decode(ENCODER))
+   ack_flag = int(packet[76:77].decode(ENCODER))
+   rwnd = int(packet[77:87].decode(ENCODER))
 
-def main():
-    # create a socket object
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   return source_port, destination_port, sequence_number, ack_number, length, ack_flag, rwnd
 
-    # connection to hostname on the port.
-    client_socket.connect((HOST, PORT))
+# writes to file and returns the sequence number of the packet that is expected 
+def write_to_file(file):
+    seq_no = last_packet_acked
+    while seq_no in buffer:
+        file.write(buffer[seq_no])
+        seq_no += 1
+    return seq_no
 
-    recv_buffer_size = 64
-    client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, recv_buffer_size)
+def error():
+    return random.randint(1, 100) <= ERROR_PERCENTAGE
 
-    # Initialize parameters
-    expected_seq_num = 0
-    ack_num = 0
-    start_time = time.time()
-    client_socket.settimeout(1)
-
-    # Initialize data variables
-    received_data = b''
-    buffer_data = b''
-    mss = 8
-
-
-    while True:
-            try:
-                # Receive TCP segment header
-                header = client_socket.recv(14)
-                seq_num, ack_num, ack, sf, rwnd, checksum = extract_header(header)
-                if not header:
-                    break
-                print("New seq_num: ",seq_num)
-                print("expected_seq_num: ",expected_seq_num)
-                # Receive data
-                data = client_socket.recv(mss)
-                print(data)
-                
-                # Verify checksum
-                if calculate_checksum(data) != checksum:
-                    continue
-            except:
-                # Handle timeout
-                rwind = recv_buffer_size - (len(buffer_data) + mss - 1) // mss
-                # print("Timeout Happened. New rwind: ", rwind)
-                try:
-                    # Send acknowledgment with updated receive window size
-                    to_send_ack = create_segment(expected_seq_num, ack_num, 1, 0, rwind, 0)
-                    client_socket.sendall(to_send_ack)
-                except:
-                    print("Connection closed")
-                start_time = time.time()
-                continue
-
-            if not data:
+def handle_receive(client_socket):
+    global last_packet_acked
+    with open('received_' + FILENAME, 'ab') as file:
+        file.truncate(0)
+        while True:
+            packet = client_socket.recv(HEADER_LENGTH)
+            if packet == END_MESSAGE:
+                print(colors.GREEN + "Entire file received." + colors.END)
                 break
             
-            # Process received data
-            seq_num = ack_num
-            val = random.randint(0, 20)
-            if val > 1:
-                if seq_num == expected_seq_num:
-                    buffer_data += data
-                    ack_num += len(data)
-                    expected_seq_num += len(data)
-                    to_send_ack = create_segment(seq_num, ack_num, 1, 0, 8, 0)
-                    if len(buffer_data) >= recv_buffer_size:
-                        received_data += buffer_data
-                        buffer_data = b''
-                        try:
-                            # Send acknowledgment if buffer is full
-                            client_socket.sendall(to_send_ack)
-                        except:
-                            print("Client closed")
-                else:
-                    # Triple duplicate acknowledgment
-                    print("Triple duplicate acknowledgment Happened. Sending acknowledgment.")
-                    to_send_ack = create_segment(expected_seq_num, expected_seq_num, 1, 1, 0, 0)
-                    client_socket.sendall(to_send_ack)
-            elif val > 0:
-                time.sleep(6)
-            else:
-                print("Triple duplicate acknowledgment Happened. Sending acknowledgment.")
-                to_send_ack = create_segment(expected_seq_num, expected_seq_num, 1, 1, 0, 0)
-                client_socket.sendall(to_send_ack)      
+            while len(packet) != HEADER_LENGTH:
+                packet += client_socket.recv(HEADER_LENGTH - len(packet))
+                print(colors.BLUE + f"received packet header: {packet}" + colors.BLUE)
 
-    # Process remaining data in buffer
-    received_data += buffer_data
-    print(received_data.decode())
+            src_port, dest_port, sequence_number, ack_number, length, ack_flag, rwnd = extract(packet)
+            data = client_socket.recv(length)
+            while len(data) != length: 
+                data += client_socket.recv(length - len(data))
 
-    # Close client and server sockets
-    client_socket.close()
+            print(colors.BLUE + f"received packet: {sequence_number}" + colors.END)
+
+            if error():
+                print(colors.RED + f"Error, sequence number: {sequence_number}" + colors.END)
+                continue
+
+            buffer[sequence_number] = data
+
+            if sequence_number < last_packet_acked: 
+                continue
+
+            last_packet_acked = write_to_file(file)
+            ack_packet = make_packet(b'', last_packet_acked)
+            client_socket.send(ack_packet)
+            print(colors.YELLOW + f"sent ack: {last_packet_acked}")
+
     
 
+def main():
+    startTime = time.time()
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((SERVER_IP, SERVER_PORT)) 
 
-if __name__ == '__main__':
+    global FILENAME
+    if len(sys.argv) <= 1:
+        print("Error")
+        return
+    
+    FILENAME = sys.argv[1]
+ 
+    message = FILENAME + "," + BUFFER_SIZE
+    client_socket.send(message.encode(ENCODER))
+
+    handle_receive(client_socket)
+ 
+    endTime = time.time()
+    print(colors.GREEN + f"DOWNLOAD FINISHED. Total time is {(endTime - startTime) * 1000}ms" + colors.END)
+ 
+ 
+if __name__ == "__main__":
     main()
-    
